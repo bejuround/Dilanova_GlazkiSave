@@ -68,7 +68,8 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>  
-                        <Image Width="100" Grid.Column="0" Stretch="UniformToFill" HorizontalAlignment="Center">
+                        <Image Width="200" Grid.Column="0" 
+                               Stretch="UniformToFill" HorizontalAlignment="Center">
             <Image.Source>
                 <Binding Path="Logo">
                     <Binding.TargetNullValue>
@@ -92,9 +93,23 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-      
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Name="TBCountt" FontSize="20" Height="20"></TextBlock>
+            <TextBlock Name="TRA11Records" FontSize="20" Height="20"></TextBlock>
+            <Button Name="LeftDirButton" Content="&lt;" Width="20" Height="20"
+             Click="LeftDirButton_Click_1" ></Button>
+            <ListBox FontSize="20" Name="PageListBox" MouseUp="PageListBox_MouseUp">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+            <Button Name="RightDirButton" Content="&gt;" Width="20" Height="20"
+             Click="RightDirButton_Click"></Button>
+        </StackPanel>
 
-        
+
 
 
     </Grid>

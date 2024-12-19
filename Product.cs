@@ -11,9 +11,13 @@ namespace Dilanova_GlazkiSave
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class Product
     {
+        [NotMapped]
+        public string TitleForComboBox { get { return Title; } }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
@@ -22,6 +26,8 @@ namespace Dilanova_GlazkiSave
             this.ProductSale = new HashSet<ProductSale>();
         }
     
+
+
         public int ID { get; set; }
         public string Title { get; set; }
         public Nullable<int> ProductTypeID { get; set; }

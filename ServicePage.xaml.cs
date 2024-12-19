@@ -31,8 +31,8 @@ namespace Dilanova_GlazkiSave
         public ServicePage()
         {
             InitializeComponent();
-            var currentServices = Dilanova_ГлазкиSaveEntities.GetContext().Agent.ToList(); 
-            AgentListView.ItemsSource = currentServices;
+            var currentAgent = Dilanova_ГлазкиSaveEntities.GetContext().Agent.ToList(); 
+            AgentListView.ItemsSource = currentAgent;
 
             ComboType.SelectedIndex = 0;
             ComboAgentType.SelectedIndex = 0;
@@ -84,11 +84,22 @@ namespace Dilanova_GlazkiSave
             {
                 currentAgent = currentAgent.OrderByDescending(p => p.Title).ToList();
             }
+
             if (ComboType.SelectedIndex == 3)
+            {
+                currentAgent = currentAgent.OrderBy(p => p.Discount).ToList();
+            }
+            if (ComboType.SelectedIndex == 4)
+            {
+                currentAgent = currentAgent.OrderByDescending(p => p.Discount).ToList();
+            }
+
+
+            if (ComboType.SelectedIndex == 5)
             {
                 currentAgent = currentAgent.OrderBy(p => p.Priority).ToList();
             }
-            if (ComboType.SelectedIndex == 4)
+            if (ComboType.SelectedIndex == 6)
             {
                 currentAgent = currentAgent.OrderByDescending(p => p.Priority).ToList();
             }
@@ -181,19 +192,19 @@ namespace Dilanova_GlazkiSave
                 PageListBox.SelectedIndex = CurrentPage;
 
                 min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
-               TBCountt.Text = min.ToString();
+            /*   TBCountt.Text = min.ToString();
                 TRA11Records.Text = " из " + CountRecords.ToString();
-
+            */
                 AgentListView.ItemsSource = CurrentPageList;
 
                 AgentListView.Items.Refresh();
             }
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+  /*     private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Manager.MainFrame.Navigate(new AddEditPage());
-        }
-
+            Manager.MainFrame.Navigate(new Agent());
+        }*/
+      
         private void ComboType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateAgent();
@@ -222,6 +233,69 @@ namespace Dilanova_GlazkiSave
         private void PageListBox_MouseUp(object sender, MouseButtonEventArgs e)
         {
             ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) -1);
+        }
+
+        private void AddBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage(null));
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage((sender as Button).DataContext as Agent));
+
+        }
+
+        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
+            if (Visibility == Visibility.Visible)
+            {
+                Dilanova_ГлазкиSaveEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                AgentListView.ItemsSource = Dilanova_ГлазкиSaveEntities.GetContext().Agent.ToList();
+                UpdateAgent();
+            }
+
+        }
+
+        private void AgentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AgentListView.SelectedItems.Count > 1)
+            {
+                ChangePriorityButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ChangePriorityButton.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void ChangePriorityButton_Click(object sender, RoutedEventArgs e)
+        {
+            int maxPriority = 0;
+            foreach (Agent agent in AgentListView.SelectedItems)
+            {
+                if (agent.Priority > maxPriority)
+                    maxPriority = agent.Priority;
+            }
+            ChangePriority changePriority = new ChangePriority(maxPriority);
+            changePriority.ShowDialog();
+
+            foreach (Agent agent in AgentListView.SelectedItems)
+            {
+                agent.Priority = changePriority.NewPriority;
+            }
+            UpdateAgent();
+
+            try
+            {
+                Dilanova_ГлазкиSaveEntities.GetContext().SaveChanges();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
         }
     }
 }

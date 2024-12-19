@@ -6,6 +6,11 @@
 //     Изменения, вносимые в этот файл вручную, будут перезаписаны при повторном создании кода.
 // </auto-generated>
 //------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Windows.Media;
 
 namespace Dilanova_GlazkiSave
 {
@@ -21,7 +26,7 @@ namespace Dilanova_GlazkiSave
             this.ProductSale = new HashSet<ProductSale>();
             this.Shop = new HashSet<Shop>();
         }
-    
+       
         public int ID { get; set; }
         public int AgentTypeID { get; set; }
         public string Title { get; set; }
@@ -41,5 +46,83 @@ namespace Dilanova_GlazkiSave
         public virtual ICollection<ProductSale> ProductSale { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shop> Shop { get; set; }
+
+        public string AgentTypeString
+        {
+            get
+            {
+                return AgentType.Title.ToString();
+            }
+        }
+
+        public int AllSales
+        {
+            get
+            {
+                return ProductSale.Where(p => (p.AgentID == this.ID)).Count();
+            }
+        }
+
+        public decimal AllSalesCount
+        {
+            get
+            {
+                decimal temp = 0;
+                foreach (ProductSale prod in ProductSale)
+                {
+                    if (prod.AgentID == this.ID)
+                        temp += prod.SumOfSale;
+                }
+                return temp;
+            }
+        }
+
+        public string PhoneDigits
+        {
+            get
+            {
+                string temp = "";
+                for (int i = 0; i < this.Phone.Length; i++)
+                {
+                    if (this.Phone[i] >= '0' && this.Phone[i] <= '9' || this.Phone[i] == '+')
+                        temp += this.Phone[i];
+                }
+                return temp;
+            }
+        }
+
+        public int Discount
+        {
+            get
+            {
+                if (this.AllSalesCount >= 0 && this.AllSalesCount <= 10 * 1000)
+                    return 0;
+                if (this.AllSalesCount >= 10 * 1000 && this.AllSalesCount <= 50 * 1000)
+                    return 5;
+                if (this.AllSalesCount >= 50 * 1000 && this.AllSalesCount <= 150 * 1000)
+                    return 10;
+                if (this.AllSalesCount >= 150 * 1000 && this.AllSalesCount <= 500 * 1000)
+                    return 20;
+                if (this.AllSalesCount >= 500 * 1000)
+                    return 25;
+                return 0;
+
+            }
+        }
+
+        public SolidColorBrush FontStyle
+        {
+            get
+            {
+                if (Discount >= 25)
+                {
+                    return (SolidColorBrush)new BrushConverter().ConvertFromString("LightGreen");
+                }
+                else
+                {
+                    return (SolidColorBrush)new BrushConverter().ConvertFromString("White");
+                }
+            }
+        }
     }
 }

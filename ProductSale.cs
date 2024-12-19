@@ -22,5 +22,21 @@ namespace Dilanova_GlazkiSave
     
         public virtual Agent Agent { get; set; }
         public virtual Product Product { get; set; }
+
+        public decimal SumOfSale
+        {
+            get
+            {
+                return this.ProductCount * Product.MinCostForAgent;
+            }
+        }
+
+        public string SaleDateOnly
+        {
+            get
+            {
+                return this.SaleDate.ToString("d");
+            }
+        }
     }
 }

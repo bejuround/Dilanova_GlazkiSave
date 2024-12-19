@@ -23,7 +23,6 @@ namespace Dilanova_GlazkiSave
                 _context = new Dilanova_ГлазкиSaveEntities();
             return _context;
         }
-  
         public Dilanova_ГлазкиSaveEntities()
             : base("name=Dilanova_ГлазкиSaveEntities")
         {
